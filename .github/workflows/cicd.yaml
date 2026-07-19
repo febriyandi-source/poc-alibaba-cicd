@@ -1,18 +1,16 @@
-name: Build and Deploy to ACK (Official Alibaba Cloud)
+name: Build and Deploy to ACK
 
 on:
   push:
     branches: [ "main" ]
 
 env:
-  # Sesuaikan dengan region dan detail ACR Anda
   REGION_ID: ap-southeast-5
   REGISTRY: registry-intl.ap-southeast-5.aliyuncs.com
   NAMESPACE: gandes-test
   IMAGE: gandes-github
   TAG: ${{ github.sha }}
   
-  # Kita akan isi ini di GitHub Secrets
   ACK_CLUSTER_ID: ${{ secrets.ACK_CLUSTER_ID }}
 
 permissions:
@@ -26,13 +24,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 1. Login ke ACR menggunakan Official Action
+    # 1. Login ke ACR dengan Fixed Password
     - name: Login to ACR
-      uses: aliyun/acr-login@v1
-      with:
-        region-id: "${{ env.REGION_ID }}"
-        access-key-id: "${{ secrets.ACCESS_KEY_ID }}"
-        access-key-secret: "${{ secrets.ACCESS_KEY_SECRET }}"
+      run: |
+        echo "${{ secrets.ACR_PASSWORD }}" | docker login --username "${{ secrets.ACR_USERNAME }}" --password-stdin ${{ env.REGISTRY }}
 
     # 2. Build dan Push Image
     - name: Build and push image to ACR
@@ -40,11 +35,11 @@ jobs:
         docker build --tag "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}:${{ env.TAG }}" .
         docker push "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}:${{ env.TAG }}"
         
-        # Opsional: Push juga sebagai 'latest' agar deployment.yaml Anda yang pakai ':latest' tetap bekerja
+        # Push juga sebagai 'latest'
         docker tag "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}:${{ env.TAG }}" "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}:latest"
         docker push "${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}:latest"
 
-    # 3. Setup Kubectl Context ke ACK secara otomatis
+    # 3. Setup Kubectl Context ke ACK
     - name: Set ACK K8s context
       uses: aliyun/ack-set-context@v1
       with:
