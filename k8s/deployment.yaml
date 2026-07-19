@@ -5,7 +5,7 @@ metadata:
   labels:
     app: my-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: my-app
@@ -17,7 +17,7 @@ spec:
       containers:
       - name: my-app
         # TAG 'latest' akan diganti otomatis oleh GitHub Actions nanti
-        image: registry-intl.ap-southeast-5.aliyuncs.com/gandes-test/gandes-repo:latest
+        image: registry-intl.ap-southeast-5.aliyuncs.com/gandes-test/gandes-github:latest
         ports:
         - containerPort: 80
 ---
