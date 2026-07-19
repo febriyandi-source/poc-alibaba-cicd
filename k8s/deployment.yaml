@@ -17,7 +17,7 @@ spec:
       containers:
       - name: my-app
         # TAG 'latest' akan diganti otomatis oleh GitHub Actions nanti
-        image: registry-intl.ap-southeast-5.aliyuncs.com/gandes-test/gandes-github:latest
+        image: registry-intl.ap-southeast-5.aliyuncs.com/gandes-test/gandes-repo:latest
         ports:
         - containerPort: 80
 ---

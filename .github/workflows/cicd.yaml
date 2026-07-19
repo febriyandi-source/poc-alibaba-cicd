@@ -8,7 +8,7 @@ env:
   REGION_ID: ap-southeast-5
   REGISTRY: registry-intl.ap-southeast-5.aliyuncs.com
   NAMESPACE: gandes-test
-  IMAGE: gandes-github
+  IMAGE: gandes-repo
   TAG: ${{ github.sha }}
   
   ACK_CLUSTER_ID: ${{ secrets.ACK_CLUSTER_ID }}
